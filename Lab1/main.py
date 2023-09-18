@@ -22,7 +22,7 @@ def main():
 
             user = bank.create_user(username)
             user.set_phone_number(phone_number)
-            user.idnp(idnp)
+            user.set_idnp(idnp)
             user.set_name(name)
             user.set_surname(surname)
             user.set_location(location)
@@ -39,7 +39,8 @@ def main():
                     print("3. Withdraw")
                     print("4. Check Balance")
                     print("5. Profile Info")
-                    print("6. Logout")
+                    print("6. Account Type")
+                    print("7. Logout")
                     account_choice = input("Select an option: ")
 
                     if account_choice == "1":
@@ -66,6 +67,10 @@ def main():
                         user.profile_info()
 
                     elif account_choice == "6":
+                        account = user.accounts[-1]
+                        account.get_account_type()
+
+                    elif account_choice == "7":
                         break
 
         elif choice == "3":

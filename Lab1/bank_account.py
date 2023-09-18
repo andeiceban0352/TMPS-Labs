@@ -15,3 +15,6 @@ class BankAccount(Account):
 
     def get_balance(self):
         return self.balance
+
+    def get_account_type(self):
+            print("Bank Account")
