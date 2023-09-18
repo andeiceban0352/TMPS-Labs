@@ -146,7 +146,7 @@ class Account(ABC):
 * Dependency Inversion Principle (DIP):
 Your code uses abstract classes and interfaces effectively to define contracts. For instance, BankUser depends on the abstract User class, and BankAccount depends on the abstract Account class. Here's an example of BankAccount depending on Account:
 
-```
+```python
 from account import Account 
 
 class BankAccount(Account):
