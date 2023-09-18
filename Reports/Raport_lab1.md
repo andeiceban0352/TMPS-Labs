@@ -33,7 +33,7 @@
 The BankUser class has a single responsibility - managing user-related data and accounts. For example:
 
 
-```
+```python
 from user import User 
 from bank_account import BankAccount 
 
