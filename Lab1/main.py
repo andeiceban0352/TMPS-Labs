@@ -1,75 +1,7 @@
-from abc import ABC, abstractmethod
+from bank_user import BankUser 
+from bank_application import BankApplication 
+    
 
-# Abstract Base Class for Account
-class Account(ABC):
-    @abstractmethod
-    def deposit(self, amount):
-        pass
-
-    @abstractmethod
-    def withdraw(self, amount):
-        pass
-
-    @abstractmethod
-    def get_balance(self):
-        pass
-
-    @abstractmethod
-    def get_account_type(self):
-        pass
-
-# User interface remains unchanged
-class User(ABC):
-    @abstractmethod
-    def create_account(self):
-        pass
-
-# Implementation of User
-class BankUser(User):
-    def __init__(self, username):
-        self.username = username
-        self.accounts = []
-
-    def create_account(self):
-        account = BankAccount()
-        self.accounts.append(account)
-        return account
-
-# Implementation of Account
-class BankAccount(Account):
-    def __init__(self):
-        self.balance = 0
-
-    def deposit(self, amount):
-        self.balance += amount
-
-    def withdraw(self, amount):
-        if self.balance >= amount:
-            self.balance -= amount
-        else:
-            print("Insufficient funds")
-
-    def get_balance(self):
-        return self.balance
-
-    def get_account_type(self):
-        return "Savings"  # Example implementation, you can customize this
-
-# Application Logic
-class BankApplication:
-    def __init__(self):
-        self.users = []
-
-    def create_user(self, username):
-        user = BankUser(username)
-        self.users.append(user)
-        return user
-
-    def login(self, username):
-        for user in self.users:
-            if user.username == username:
-                return user
-        return None
 
 def main():
     bank = BankApplication()
@@ -82,7 +14,19 @@ def main():
 
         if choice == "1":
             username = input("Enter username: ")
-            bank.create_user(username)
+            phone_number = input("Enter phone number: ")
+            idnp = input("Enter ID number: ")
+            name = input("Enter name: ")
+            surname = input("Enter surname: ")
+            location = input("Enter location: ")
+
+            user = bank.create_user(username)
+            user.set_phone_number(phone_number)
+            user.idnp(idnp)
+            user.set_name(name)
+            user.set_surname(surname)
+            user.set_location(location)
+
             print(f"User '{username}' created successfully!")
 
         elif choice == "2":
@@ -94,7 +38,7 @@ def main():
                     print("2. Deposit")
                     print("3. Withdraw")
                     print("4. Check Balance")
-                    print("5. Get Account Type")
+                    print("5. Profile Info")
                     print("6. Logout")
                     account_choice = input("Select an option: ")
 
@@ -119,8 +63,7 @@ def main():
                         print(f"Account balance: {account.get_balance()}")
 
                     elif account_choice == "5":
-                        account = user.accounts[-1]
-                        print(f"Account type: {account.get_account_type()}")
+                        user.profile_info()
 
                     elif account_choice == "6":
                         break
