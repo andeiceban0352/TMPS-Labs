@@ -19,7 +19,7 @@
 
 
 ## Main tasks:
-&ensp; &ensp; __1. Choose an OO programming language and a suitable IDE or Editor (No frameworks/libs/engines allowed).__
+&ensp; &ensp; __1. Choose an OOP programming language and a suitable IDE or Editor (No frameworks/libs/engines allowed).__
 
 &ensp; &ensp; __2. Select a domain area for the sample project.__
 
