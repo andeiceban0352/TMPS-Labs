@@ -69,24 +69,57 @@ class BankUser(User):
 ```
 
 
-* Open/Closed Principle (OCP) 
-Class Customer is open for extension because you can to add for example another type of customer, if you change something in Customer class you need to change his child classes. And LSP is presented in fact that Customer class can be easely substituted with OrdinaryCustomer class.
-```
-public void main() {
+* Open/Closed Principle (OCP)
+* Any new account type  inherit  Account class and implement the get_account_type method.
+So, we can easily add new account types by creating classes that inherit from Account without modifying the existing code. This adheres to the Open/Closed Principle, as you can extend the functionality without modifying the existing codebase.
 
-}
+```python
+class BankAccount(Account):
+    def __init__(self):
+        self.balance = 0
+
+    def deposit(self, amount):
+        self.balance += amount
+
+    def withdraw(self, amount):
+        if self.balance >= amount:
+            self.balance -= amount
+        else:
+            print("Insufficient funds")
+
+    def get_balance(self):
+        return self.balance
+
+    def get_account_type(self):
+            print("Bank Account")
+
 ```
 
 * Liskov Substitution Principle (LSP):
-```
-public void main() {
+THe BankUser class manages user accounts. The LSP implies that derived classes should be substitutable for their base classes without affecting the correctness of the program. Here's an example:
+```python
+class BankUser(User):
+    def __init__(self, username):
+        # ...
+    
+    def create_account(self):
+        # ...
 
-}
+    def set_phone_number(self, phone_number):
+        # ...
+
+    # Other methods...
+
+    def profile_info(self):
+        # ...
+
 ```
+Now, if we want to create a specialized type of bank user, ex:PremiumBankUser. You can create a subclass of BankUser to represent premium users. 
+PremiumBankUser is a subclass of BankUser, which means it inherits the same interface as BankUser , it won't break the program's correctness because it follows the same interface and behaviors as its parent class.
 
 * Interface Segregation Principle (ISP):
 User and Account interfaces are minimal and focused on their respective roles. For example, the Account interface specifies only the methods relevant to account management:
-```
+```python
 from abc import ABC, abstractmethod
 
 class Account(ABC):
@@ -137,4 +170,4 @@ class BankAccount(Account):
 ## Conclusions
 
 
-In conclusion, given laboratory work on SOLID principles emphasized the significance of these fundamental software design principles - Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion. I applied these principles to refactor and enhance a software project, demonstrating their ability to reduce complexity, improve organization, and facilitate long-term maintainability. I also recognized the benefits of SOLID principles in fostering collaboration among developers and ensuring software systems remain adaptable in a rapidly changing environment. As software engineers, integrating these principles into our practices is crucial for creating durable, adaptable, and high-quality software.
+The importance of the fundamental software design principles of Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion was highlighted through laboratory work on the SOLID principles. The use of SOLID principles helps produce not only good architecture but efficient architecture. It is also about separating concerns and creating a design that allows sustainable development. When the developer builds software following a bad design, the code can become inflexible and more brittle. Small changes in the software can result in bugs. For these reasons, we should follow SOLID Principles.
