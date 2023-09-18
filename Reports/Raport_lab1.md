@@ -1,7 +1,7 @@
 # Creational Design Patterns
 
 
-## Author: Spatari Stanislav
+## Author: Ceban Andrei
 
 ----
 
