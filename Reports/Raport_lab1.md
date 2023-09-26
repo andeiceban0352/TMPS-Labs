@@ -30,7 +30,7 @@
 ## Code examples of SOLID Principles:
 
 * Single Responsibility Principle (SRP):
-The BankUser class has a single responsibility - managing user-related data and accounts. For example:
+The BankUser class has a single responsibility - managing user-related data. For example:
 
 
 ```python
@@ -144,7 +144,7 @@ class Account(ABC):
 
 
 * Dependency Inversion Principle (DIP):
-Your code uses abstract classes and interfaces effectively to define contracts. For instance, BankUser depends on the abstract User class, and BankAccount depends on the abstract Account class. Here's an example of BankAccount depending on Account:
+Ih the code i use abstract classes and interfaces effectively. For instance, BankUser depends on the abstract User class, and BankAccount depends on the abstract Account class. Here's an example of BankAccount depending on Account:
 
 ```python 
 from account import Account 
