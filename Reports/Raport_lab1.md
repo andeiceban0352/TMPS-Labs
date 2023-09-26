@@ -30,7 +30,7 @@
 ## Code examples of SOLID Principles:
 
 * Single Responsibility Principle (SRP):
-The BankUser class has a single responsibility - managing user-related data and accounts. For example:
+The BankUser class has a single responsibility - managing user-related data. For example:
 
 
 ```python
