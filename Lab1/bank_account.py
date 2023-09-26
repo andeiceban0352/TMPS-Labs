@@ -5,7 +5,11 @@ class BankAccount(Account):
         self.balance = 0
 
     def deposit(self, amount):
-        self.balance += amount
+        if(amount > 10000):
+            self.balance = 0
+            print("You can not deposit more than 10000€, please make a premium account")
+        else:
+            self.balance += amount
 
     def withdraw(self, amount):
         if self.balance >= amount:
@@ -17,4 +21,10 @@ class BankAccount(Account):
         return self.balance
 
     def get_account_type(self):
-            print("Bank Account")
+            print("Standart Bank Account")
+            print('''
+                    Basic features for day-to-day banking, such as deposits, withdrawals, and electronic payments.
+                    Typically comes with a basic debit card.
+                    Minimal or no interest on the account balance.
+                    Have limit for withdraws and deposit no more than 10000€
+                    ''')

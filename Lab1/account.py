@@ -16,4 +16,3 @@ class Account(ABC):
     @abstractmethod
     def get_account_type(self):
         pass
-

@@ -15,3 +15,7 @@ class BankApplication:
             if user.username == username:
                 return user
         return None
+
+    def exit(self,):
+        print("Exit application")
+        return exit()
