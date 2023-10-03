@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from models.account import Account
+from bank.domain.models.account import Account
 
 class ConcreteAccount(Account):
     def __init__(self, account_id, owner_name, balance=0):

@@ -1,4 +1,4 @@
-from models.customer import Customer
+from bank.domain.models.customer import Customer
 
 class RegularCustomer(Customer):
     def add_account(self, account):
