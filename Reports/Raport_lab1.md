@@ -30,113 +30,119 @@
 ## Code examples of SOLID Principles:
 
 * Single Responsibility Principle (SRP):
-The BankUser class has a single responsibility - managing user-related data. For example:
+Classes like Bank, AccountPool, BankManager, and TransactionProcessor have single responsibilities, such as managing accounts, customers, and processing transactions.
 
 
 ```python
-from user import User 
-from bank_account import BankAccount 
+class BankManager:
+    def __init__(self):
+        self.customers = []
 
-class BankUser(User):
-    def __init__(self, username):
-        self.username = username
-        self.accounts = []
-        self.phone_number = None
-        self.idnp = None
-        self.name = None
-        self.surname = None
-        self.location = None
+    def add_customer(self, customer):
+        self.customers.append(customer)
 
-    def create_account(self):
-        account = BankAccount()
-        self.accounts.append(account)
-        return account
+    def get_customer_by_id(self, customer_id):
+        for customer in self.customers:
+            if customer.customer_id == customer_id:
+                return customer
 
-    def set_phone_number(self, phone_number):
-        self.phone_number = phone_number
+class TransactionProcessor:
+    @staticmethod
+    def process_transaction(transaction, bank):
+        source_account = bank.get_account_by_id(transaction.source_account_id)
+        destination_account = bank.get_account_by_id(transaction.destination_account_id)
 
-    def set_idnp(self, idnp):
-        self.idnp = idnp
-
-    def set_name(self, name):
-        self.name = name
-
-    def set_surname(self, surname):
-        self.surname = surname
-
-    def set_location(self, location):
-        self.location = location
+        if source_account and destination_account:
+            if source_account.balance >= transaction.amount:
+                source_account.balance -= transaction.amount
+                destination_account.balance += transaction.amount
+                return True
+        return False
 ```
 
 
 * Open/Closed Principle (OCP)
-* Any new account type  inherit  Account class and implement the get_account_type method.
-So, we can easily add new account types by creating classes that inherit from Account without modifying the existing code. This adheres to the Open/Closed Principle, as you can extend the functionality without modifying the existing codebase.
+The code is open for extension but closed for modification. You can add new account types by creating new prototypes (SavingsAccount, CheckingAccount, LoanAccount) without modifying the existing code.
 
 ```python
-class BankAccount(Account):
-    def __init__(self):
-        self.balance = 0
+class Account(ABC):
+     # ...
 
-    def deposit(self, amount):
-        self.balance += amount
+class SavingsAccount(AccountPrototype):
+    # ...
 
-    def withdraw(self, amount):
-        if self.balance >= amount:
-            self.balance -= amount
-        else:
-            print("Insufficient funds")
+class CheckingAccount(AccountPrototype):
+     # ...
 
-    def get_balance(self):
-        return self.balance
 
-    def get_account_type(self):
-            print("Bank Account")
-
+class LoanAccount(AccountPrototype):
+    # ...
 ```
 
 * Liskov Substitution Principle (LSP):
-THe BankUser class manages user accounts. The LSP implies that derived classes should be substitutable for their base classes without affecting the correctness of the program. Here's an example:
+The code allows for the substitution of derived account types (SavingsAccount, CheckingAccount, LoanAccount) for the base class (Account) without affecting the correctness of the program.
+
 ```python
-class BankUser(User):
-    def __init__(self, username):
-        # ...
-    
-    def create_account(self):
-        # ...
+class SavingsAccount(AccountPrototype):
+    def __init__(self):
+        self._account_id = None
+        self._owner_name = None
+        self._balance = 0
 
-    def set_phone_number(self, phone_number):
-        # ...
+    def set_account_id(self, account_id):
+        self._account_id = account_id
 
-    # Other methods...
+    def set_owner_name(self, owner_name):
+        self._owner_name = owner_name
 
-    def profile_info(self):
-        # ...
+    def clone(self):
+        new_account = SavingsAccount()
+        new_account.set_account_id(self._account_id)
+        new_account.set_owner_name(self._owner_name)
+        new_account.balance = self._balance
+        return new_account
 
+class CheckingAccount(AccountPrototype):
+    def __init__(self):
+        self._account_id = None
+        self._owner_name = None
+        self._balance = 0
+
+     # ...
+
+
+class LoanAccount(AccountPrototype):
+    def __init__(self):
+        self._account_id = None
+        self._owner_name = None
+        self._balance = 0
+
+    # ... 
 ```
-Now, if we want to create a specialized type of bank user, ex:PremiumBankUser. You can create a subclass of BankUser to represent premium users. 
-PremiumBankUser is a subclass of BankUser, which means it inherits the same interface as BankUser , it won't break the program's correctness because it follows the same interface and behaviors as its parent class.
+
 
 * Interface Segregation Principle (ISP):
-User and Account interfaces are minimal and focused on their respective roles. For example, the Account interface specifies only the methods relevant to account management:
+The code follows the Interface Segregation Principle by defining separate interfaces (e.g., Account, AccountBuilder, AccountPrototype, Transaction, Customer) with specific sets of methods for different purposes.
+
 ```python
-from abc import ABC, abstractmethod
-
 class Account(ABC):
+    def __init__(self, account_id, owner_name, balance=0):
+        self._account_id = account_id
+        self._owner_name = owner_name
+        self._balance = balance
+
+class AccountBuilder(ABC):
+    def __init__(self):
+        self.account_id = None
+        self.owner_name = None
+        self.balance = 0
     @abstractmethod
-    def deposit(self, amount):
+    def build(self):
         pass
 
+class AccountPrototype(ABC):
     @abstractmethod
-    def withdraw(self, amount):
-        pass
-
-    @abstractmethod
-    def get_balance(self):
-        pass
-
-    @abstractmethod
-    def get_account_type(self):
+    def clone(self):
         pass
 
 
@@ -144,26 +150,38 @@ class Account(ABC):
 
 
 * Dependency Inversion Principle (DIP):
-Ih the code i use abstract classes and interfaces effectively. For instance, BankUser depends on the abstract User class, and BankAccount depends on the abstract Account class. Here's an example of BankAccount depending on Account:
+The code follows the Dependency Inversion Principle by abstracting the Account and AccountBuilder classes as well as the Transaction classes, allowing for flexible extension and interchangeability of concrete implementations.
 
 ```python 
-from account import Account 
+class Account(ABC):
+    def __init__(self, account_id, owner_name, balance=0):
+        self._account_id = account_id
+        self._owner_name = owner_name
+        self._balance = balance
 
-class BankAccount(Account):
-    def __init__(self):
-        self.balance = 0
+    @property
+    def account_id(self):
+        return self._account_id
 
-    def deposit(self, amount):
-        self.balance += amount
+    @property
+    def owner_name(self):
+        return self._owner_name
 
+    @property
+    def balance(self):
+        return self._balance
+
+    @balance.setter
+    def balance(self, amount):
+        self._balance = amount
+
+    @abstractmethod
     def withdraw(self, amount):
-        if self.balance >= amount:
-            self.balance -= amount
-        else:
-            print("Insufficient funds")
+        pass
 
-    def get_balance(self):
-        return self.balance
+    @abstractmethod
+    def deposit(self, amount):
+        pass
 
 ```
 
