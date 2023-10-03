@@ -12,50 +12,79 @@
 
 ## Theory:
 
-&ensp; &ensp; Creational design patterns are a category of design patterns that focus on the process of object creation. They provide a way to create objects in a flexible and controlled manner, while decoupling the client code from the specifics of object creation. Creational design patterns address common problems encountered in object creation, such as how to create objects with different initialization parameters, how to create objects based on certain conditions, or how to ensure that only a single instance of an object is created. There are several creational design patterns that have their own strengths and weaknesses. Each of it is best suited for solving specific problems related to object creation. By using creational design patterns, developers can improve the flexibility, maintainability, and scalability of their code.
+&ensp; &ensp; Creational design patterns encompass a set of design principles centered around the creation of objects. They offer a means to generate objects in a versatile and organized manner, all while separating the client code from the intricacies of object creation. These patterns tackle common issues encountered during object creation, such as constructing objects with varying initialization parameters, generating objects based on specific conditions, or ensuring the existence of only a single instance of an object. There exist numerous creational design patterns, each with its own unique advantages and disadvantages, ideally suited for addressing particular challenges linked to object creation. By integrating creational design patterns, developers can enhance the adaptability, maintainability, and scalability of their code.
 
-The project is a User Management System, which handles CRUD operations for users.
 
 ### Singleton Design Pattern
 
-The Singleton pattern ensures that a class has only one instance and provides a global point to access it. This is useful for logging, driver objects, caching, thread pools, or database connections.
+The Singleton pattern guarantees that a class has just a single instance and offers a universal entry point for accessing it. This proves beneficial for functionalities like logging, driver objects, caching, thread pools, or managing database connections.
 
-In the `UserService` class, the Singleton pattern is implemented to ensure that only one instance of `UserService` exists.
+The `Bank` class is implemented as a Singleton, ensuring that there is only one instance of the bank throughout the application, using the __new__ method to control the creation of instances.
 
 ```python
+class Bank(ABC):
+    _instance = None
 
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Bank, cls).__new__(cls)
+            cls._instance.accounts = []
+        return cls._instance
 ```
 
 ### Builder Design Pattern
 
-The Builder pattern is used to construct a complex object step by step. It provides a clear separation between the construction and representation of an object.
+The builder pattern is a design pattern designed to provide a flexible solution to various object creation problems in object-oriented programming
 
-In the `UserDTO` class, the Builder pattern is implemented to allow the creation of `UserDTO` objects in a step-by-step manner.
+The Builder design pattern is used to construct a complex object step by step. In the code, the `AccountBuilder` and `ConcreteAccountBuilder` classes represent the Builder pattern. The ConcreteAccountBuilder class is responsible for creating instances of ConcreteAccount with various attributes, allowing you to build accounts with different configurations.
 
 ```python
+class AccountBuilder(ABC):
+    # ...
 
+class ConcreteAccountBuilder(AccountBuilder):
+    # ...
 ```
 
 ### Prototype Design Pattern
 
-The Prototype pattern is used for creating new objects by copying existing objects. It is particularly useful when object creation is costly.
+Prototype design pattern is used when the Object creation is a costly affair and requires a lot of time and resources and you have a similar object already existing
 
-In the `User` class, the Prototype pattern is implemented using the `clone` method.
+The Prototype design pattern allows you to create new objects by copying an existing object, known as a prototype. In the code, the Prototype pattern is implemented with the `AccountPrototype` interface and its concrete implementations (`SavingsAccount`, `CheckingAccount`, `LoanAccount`). These classes provide a clone method that creates a new instance by copying the existing object's attributes.
 
 ```python
+class AccountPrototype(ABC):
+    @abstractmethod
+    def clone(self):
+        pass
 
+class SavingsAccount(AccountPrototype):
+    # ...
+
+class CheckingAccount(AccountPrototype):
+    # ...
+
+class LoanAccount(AccountPrototype):
 ```
 
 ### Object Pooling Design Pattern
 
-Object Pooling is used to manage the object caching. It can significantly improve performance by reusing objects instead of creating them anew each time they are needed.
+The object pool pattern is a software creational design pattern that uses a set of initialized objects kept ready to use – a "pool" – rather than allocating and destroying them on demand. 
+Object Pooling is used to manage the object caching. It can significantly improve performance by reusing objects instead of creating them a new each time they are needed.
 
-In the `UserRepository` class, Object Pooling is implemented to manage `User` objects.
+The Object Pooling design pattern is used to manage a pool of reusable objects to reduce the overhead of object creation. In the code, the `AccountPool` class is an example of object pooling. It allows you to create and retrieve account objects from a pool of pre-created instances.
 
 ```python
+class AccountPool:
+    # ...
 
+    def create_account(self, account_prototype):
+        # ...
+
+    def get_account(self):
+        # ...
 ```
 
 ## Conclusion
 
-This laboratory work helped me to understand the importance of design patterns in software development. Implementing these patterns made the code more organized, maintainable, and scalable.
+This laboratory work not only deepened my appreciation for the importance of design patterns in software development but also underscored their crucial role in crafting robust and efficient software solutions. By implementing these design patterns, I witnessed firsthand how they can greatly enhance code organization, maintainability, and scalability. These design patterns serve as valuable tools in the developer's toolkit, offering proven solutions to recurring design challenges and promoting best practices in software engineering.
