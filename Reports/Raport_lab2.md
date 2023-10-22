@@ -19,52 +19,92 @@
 
 The Singleton pattern guarantees that a class has just a single instance and offers a universal entry point for accessing it. This proves beneficial for functionalities like logging, driver objects, caching, thread pools, or managing database connections.
 
-The `Bank` class is implemented as a Singleton, ensuring that there is only one instance of the bank throughout the application, using the __new__ method to control the creation of instances.
+The `Bank` class is implemented as a Singleton, ensuring that there is only one instance of the bank throughout the application, using the getInstance method to control the creation of instances.
 
-```python
-class Bank(ABC):
-    _instance = None
+```c++
+    class Bank {
+    private:
+        static Bank* instance;
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(Bank, cls).__new__(cls)
-            cls._instance.accounts = []
-        return cls._instance
+        map<string, BankAccount*> accounts;
+        queue<BankAccount*> accountPool;  // Pool of BankAccount objects
+
+        // Private constructor to prevent direct instantiation
+        Bank() {}
+
+    public:
+        // singleton principle, only one instance of bank will be in this app
+        static Bank& getInstance() {
+            static Bank instance; // Guaranteed to be destroyed.
+                                // Instantiated on first use.
+            return instance;
+        }
+    }
+
 ```
 
 ### Builder Design Pattern
 
 The builder pattern is a design pattern designed to provide a flexible solution to various object creation problems in object-oriented programming
 
-The Builder design pattern is used to construct a complex object step by step. In the code, the `AccountBuilder` and `ConcreteAccountBuilder` classes represent the Builder pattern. The ConcreteAccountBuilder class is responsible for creating instances of ConcreteAccount with various attributes, allowing you to build accounts with different configurations.
+The Builder design pattern is used to construct a complex object step by step. The CustomerBuilder class is a ConcreteBuilder that is used to construct the Customer object. The Customer class seems to be the Product being constructed, with name, age, address, and isVIP as its attributes. The CustomerBuilder class provides methods to set each of these attributes step by step, allowing for the construction of a Customer object in a controlled and organized manner.
 
-```python
-class AccountBuilder(ABC):
-    # ...
+```c++
+    class CustomerBuilder{
+    public:
+        Customer customer;
 
-class ConcreteAccountBuilder(AccountBuilder):
-    # ...
+    public:
+        CustomerBuilder() : customer("", 0, "", "") {}
+
+
+        CustomerBuilder& setName(const string& name) {
+            customer.name = name;
+            return *this;
+        }
+
+        CustomerBuilder& setAge(int age) {
+            customer.age = age;
+            return *this;
+        }
+
+        CustomerBuilder& setAddress(const string& address) {
+            customer.address = address;
+            return *this;
+        }
+
+        CustomerBuilder& setIsVIP(string isVIP) {
+            customer.isVIP = isVIP;
+            return *this;
+        }
+
+        Customer build() {
+            return customer;
+        }
+    };
 ```
 
-### Prototype Design Pattern
+### Factory Design Pattern
 
 Prototype design pattern is used when the Object creation is a costly affair and requires a lot of time and resources and you have a similar object already existing
 
-The Prototype design pattern allows you to create new objects by copying an existing object, known as a prototype. In the code, the Prototype pattern is implemented with the `AccountPrototype` interface and its concrete implementations (`SavingsAccount`, `CheckingAccount`, `LoanAccount`). These classes provide a clone method that creates a new instance by copying the existing object's attributes.
+The Prototype design pattern allows you to create new objects by copying an existing object, known as a prototype. In the code, the AccountFactory class, which is the factory interface, defining the method createAccount for creating BankAccount objects. The BankAccountFactory is a concrete factory class that inherits from the AccountFactory and provides an implementation for the createAccount method, creating instances of the BankAccount class.
 
-```python
-class AccountPrototype(ABC):
-    @abstractmethod
-    def clone(self):
-        pass
+```c++
+    // Abstract factory for creating accounts
+    class AccountFactory {
+    public:
+        virtual BankAccount* createAccount(double initialBalance) = 0;
+    };
 
-class SavingsAccount(AccountPrototype):
-    # ...
+    // Factory class for BankAccount
+    class BankAccountFactory : public AccountFactory {
+    public:
+        BankAccount* createAccount(double initialBalance) override {
+            return new BankAccount(initialBalance);
+        }
+    };
 
-class CheckingAccount(AccountPrototype):
-    # ...
-
-class LoanAccount(AccountPrototype):
 ```
 
 ### Object Pooling Design Pattern
@@ -72,17 +112,34 @@ class LoanAccount(AccountPrototype):
 The object pool pattern is a software creational design pattern that uses a set of initialized objects kept ready to use – a "pool" – rather than allocating and destroying them on demand. 
 Object Pooling is used to manage the object caching. It can significantly improve performance by reusing objects instead of creating them a new each time they are needed.
 
-The Object Pooling design pattern is used to manage a pool of reusable objects to reduce the overhead of object creation. In the code, the `AccountPool` class is an example of object pooling. It allows you to create and retrieve account objects from a pool of pre-created instances.
+The Object Pooling design pattern is used to manage a pool of reusable objects to reduce the overhead of object creation. In the code,  The accountPool maintains a set of BankAccount objects that can be reused when needed. The acquireAccount function retrieves an available BankAccount from the pool, and if the pool is empty, it creates a new BankAccount object. The releaseAccount function returns the BankAccount object back to the pool for future reuse.
 
-```python
-class AccountPool:
-    # ...
+```c++
 
-    def create_account(self, account_prototype):
-        # ...
 
-    def get_account(self):
-        # ...
+    class Bank {
+    private:
+
+        queue<BankAccount*> accountPool;  // Pool of BankAccount objects
+        ...
+    }
+        // Object Pooling
+    BankAccount* acquireAccount(double initialBalance) {
+        if (accountPool.empty()) {
+            return new BankAccount(initialBalance);
+        } else {
+            BankAccount* account = accountPool.front();
+            accountPool.pop();
+            account->deposit(initialBalance);  // Reset the balance
+            return account;
+        }
+    }
+
+    void releaseAccount(BankAccount* account) {
+        accountPool.push(account);  // Release the account back to the pool
+    }
+
+
 ```
 
 ## Conclusion
