@@ -1,147 +1,178 @@
-# Topic: Creational Design Patterns Principles
+# Topic: Structural Design Patterns 
 
 ## Author: Ceban Andrei FAF-211
 
 ## Objectives:
 
-1. Study and understand the Creational Design Patterns.
+1. Study and understand the Structural Design Patterns.
 
-2. Choose a domain, define its main classes/models/entities and choose the appropriate instantiation mechanisms.
+2. As a continuation of the previous laboratory work, think about the functionalities that your system will need to provide to the user.
 
-3. Use some creational design patterns for object instantiation in a sample project.
+3. Implement some additional functionalities, or create a new project using structural design patterns.
 
 ## Theory:
 
-&ensp; &ensp; Creational design patterns encompass a set of design principles centered around the creation of objects. They offer a means to generate objects in a versatile and organized manner, all while separating the client code from the intricacies of object creation. These patterns tackle common issues encountered during object creation, such as constructing objects with varying initialization parameters, generating objects based on specific conditions, or ensuring the existence of only a single instance of an object. There exist numerous creational design patterns, each with its own unique advantages and disadvantages, ideally suited for addressing particular challenges linked to object creation. By integrating creational design patterns, developers can enhance the adaptability, maintainability, and scalability of their code.
+&ensp; &ensp; Structural design patterns are a category of design patterns that focus on the composition of classes and objects to form larger structures and systems. They provide a way to organize objects and classes in a way that is both flexible and efficient, while allowing for the reuse and modification of existing code. Structural design patterns address common problems encountered in the composition of classes and objects, such as how to create new objects that inherit functionality from existing objects, how to create objects that share functionality without duplicating code, or how to define relationships between objects in a flexible and extensible way.
 
 
-### Singleton Design Pattern
+### Adapter Design Pattern
 
-The Singleton pattern guarantees that a class has just a single instance and offers a universal entry point for accessing it. This proves beneficial for functionalities like logging, driver objects, caching, thread pools, or managing database connections.
+The Adapter Pattern allows objects with incompatible interfaces to collaborate. It acts as a bridge between two incompatible interfaces. It is used when an object needs to work with another object that has an incompatible interface.
 
-The `Bank` class is implemented as a Singleton, ensuring that there is only one instance of the bank throughout the application, using the getInstance method to control the creation of instances.
+Bank Adapter class serves as an adapter for the BankInterface. It adapts the interface of the Bank class to the interface specified by the BankInterface. The BankAdapter class implements the BankInterface and internally uses an instance of the Bank class
 
 ```c++
-    class Bank {
+    class BankInterface {
+    public:
+        ....
+    };
+    
+    
+    class BankAdapter : public BankInterface {
     private:
-        static Bank* instance;
-
-        map<string, BankAccount*> accounts;
-        queue<BankAccount*> accountPool;  // Pool of BankAccount objects
-
-        // Private constructor to prevent direct instantiation
-        Bank() {}
-
+        Bank& bank;
+    
     public:
-        // singleton principle, only one instance of bank will be in this app
-        static Bank& getInstance() {
-            static Bank instance; // Guaranteed to be destroyed.
-                                // Instantiated on first use.
-            return instance;
+        BankAdapter(Bank& bank) : bank(bank) {}
+    
+        void createAccount(const string& accountNumber, BankAccount* account) override {
+            ....
         }
-    }
-
-```
-
-### Builder Design Pattern
-
-The builder pattern is a design pattern designed to provide a flexible solution to various object creation problems in object-oriented programming
-
-The Builder design pattern is used to construct a complex object step by step. The CustomerBuilder class is a ConcreteBuilder that is used to construct the Customer object. The Customer class seems to be the Product being constructed, with name, age, address, and isVIP as its attributes. The CustomerBuilder class provides methods to set each of these attributes step by step, allowing for the construction of a Customer object in a controlled and organized manner.
-
-```c++
-    class CustomerBuilder{
-    public:
-        Customer customer;
-
-    public:
-        CustomerBuilder() : customer("", 0, "", "") {}
-
-
-        CustomerBuilder& setName(const string& name) {
-            customer.name = name;
-            return *this;
+    
+        void withdrawMoney(const string& accountNumber, double amount) override {
+            ....
         }
-
-        CustomerBuilder& setAge(int age) {
-            customer.age = age;
-            return *this;
+    
+        void depositMoney(const string& accountNumber, double amount) override {
+            ....
         }
-
-        CustomerBuilder& setAddress(const string& address) {
-            customer.address = address;
-            return *this;
-        }
-
-        CustomerBuilder& setIsVIP(string isVIP) {
-            customer.isVIP = isVIP;
-            return *this;
-        }
-
-        Customer build() {
-            return customer;
-        }
-    };
-```
-
-### Factory Design Pattern
-
-Prototype design pattern is used when the Object creation is a costly affair and requires a lot of time and resources and you have a similar object already existing
-
-The Prototype design pattern allows you to create new objects by copying an existing object, known as a prototype. In the code, the AccountFactory class, which is the factory interface, defining the method createAccount for creating BankAccount objects. The BankAccountFactory is a concrete factory class that inherits from the AccountFactory and provides an implementation for the createAccount method, creating instances of the BankAccount class.
-
-```c++
-    // Abstract factory for creating accounts
-    class AccountFactory {
-    public:
-        virtual BankAccount* createAccount(double initialBalance) = 0;
-    };
-
-    // Factory class for BankAccount
-    class BankAccountFactory : public AccountFactory {
-    public:
-        BankAccount* createAccount(double initialBalance) override {
-            return new BankAccount(initialBalance);
+    
+        double checkAccountBalance(const string& accountNumber) override {
+            ....
         }
     };
 
 ```
 
-### Object Pooling Design Pattern
+### Composite Design Pattern
 
-The object pool pattern is a software creational design pattern that uses a set of initialized objects kept ready to use – a "pool" – rather than allocating and destroying them on demand. 
-Object Pooling is used to manage the object caching. It can significantly improve performance by reusing objects instead of creating them a new each time they are needed.
+The Composite pattern describes a group of objects that are treated the same way as a single instance of the same type of object. The intent of a composite is to "compose" objects into tree structures to represent part-whole hierarchies.
 
-The Object Pooling design pattern is used to manage a pool of reusable objects to reduce the overhead of object creation. In the code,  The accountPool maintains a set of BankAccount objects that can be reused when needed. The acquireAccount function retrieves an available BankAccount from the pool, and if the pool is empty, it creates a new BankAccount object. The releaseAccount function returns the BankAccount object back to the pool for future reuse.
+Component -> BankComponent: Is the base interface or abstract class for all components in the composition. It declares the interface for objects in the composition, including methods for adding, removing, etc.
+
+Leaf -> BankLeaf: This represents the end objects in the composition. It implements the BankComponent interface and represents individual objects in the composition. In this case, it represents individual bank accounts.
+
+Composite -> BankComposite: This represents the complex components that can have children. It implements the BankComponent interface and provides the mechanisms to manage its child components, here representing a composite of bank accounts.
 
 ```c++
 
-
-    class Bank {
-    private:
-
-        queue<BankAccount*> accountPool;  // Pool of BankAccount objects
+    class BankComponent {
+    public:
+        virtual void add(BankComponent* component) = 0;
         ...
-    }
-        // Object Pooling
-    BankAccount* acquireAccount(double initialBalance) {
-        if (accountPool.empty()) {
-            return new BankAccount(initialBalance);
-        } else {
-            BankAccount* account = accountPool.front();
-            accountPool.pop();
-            account->deposit(initialBalance);  // Reset the balance
-            return account;
+    };
+    
+    class BankLeaf : public BankComponent {
+    private:
+        BankAccount* account;
+    
+    public:
+        BankLeaf(BankAccount* acc) : account(acc) {}
+    
+        void add(BankComponent* component) override {
+            // Leaf node cannot add components
+            cout << "Cannot add to a leaf." << endl;
         }
-    }
+    
+        ...
+    };
+    
+    class BankComposite : public BankComponent {
+    private:
+        vector<BankComponent*> accounts;
+    
+    public:
+        void add(BankComponent* component) override {
+            accounts.push_back(component);
+        }
+    
+        ...
+```
 
-    void releaseAccount(BankAccount* account) {
-        accountPool.push(account);  // Release the account back to the pool
-    }
+### Decorator Design Pattern
+
+Decorator is a structural design pattern that lets you attach new behaviors to objects by placing these objects inside special wrapper objects that contain the behaviors.
+
+Here in the example the BankApplicationMenuDecorator extends BankApplicationMenu,modify the behavior of the checkAccountBalance class dynamically, without affecting the behavior of other objects from the same class.
+
+```c++
+    class BankApplicationMenuDecorator : public BankApplicationMenu {
+    private:
+        BankInterface* bankAdapter;
+    
+    public:
+        BankApplicationMenuDecorator(BankInterface* interface) : bankAdapter(interface) {}
+    
+        void checkAccountBalance() override {
+            ...
+        }
+    };
+
+```
+
+### Facade Pooling Design Pattern
+
+The Facade Pattern is a structural design pattern that provides a simplified interface to a larger body of code, such as a class library. It hides the complexities of the underlying system and provides a simpler interface for the client to interact with. The main goal of the 
+
+BankFacade class acts as a facade to the more complex operations of the BankApplicationMenu and Bank classes. It provides a simplified interface for clients to interact with the underlying banking system without needing to understand its complexities. The clients can use the BankFacade to perform operations like creating accounts, making transactions, withdrawing and depositing money, checking account balances, and creating different types of customers.
+
+```c++
+
+    class BankFacade {
+    private:
+        BankApplicationMenu bankApp;
+        Bank& bank;
+    
+    public:
+        BankFacade() : bank(Bank::getInstance()) {}
+    
+        void createAccount(const string& accountNumber, double initialBalance) {
+            BankAccount* newAccount = bank.acquireAccount(initialBalance);
+            bank.createAccount(accountNumber, newAccount);
+        }
+    
+        void makeTransaction() {
+            ...
+        }
+    
+        void withdrawMoney(const string& accountNumber, double amount) {
+           ...
+        }
+    
+        void depositMoney(const string& accountNumber, double amount) {
+           ...
+        }
+    
+        double checkAccountBalance(const string& accountNumber) {
+            ...
+        }
+    
+        Customer createCustomer() {
+            ...
+        }
+    
+        void createVIPCustomer() {
+            ...
+        }
+    
+        void createRegularCustomer() {
+            ...
+        }
+    };
 
 
 ```
 
 ## Conclusion
 
-This laboratory work not only deepened my appreciation for the importance of design patterns in software development but also underscored their crucial role in crafting robust and efficient software solutions. By implementing these design patterns, I witnessed firsthand how they can greatly enhance code organization, maintainability, and scalability. These design patterns serve as valuable tools in the developer's toolkit, offering proven solutions to recurring design challenges and promoting best practices in software engineering.
+This laboratory solidified my understanding of design patterns in software development and also highlighted their indispensable role in constructing resilient and efficient software solutions. Through the practical implementation of the Facade, Decorator, Composite, and Adapter design patterns, I gained valuable insights into how they contribute to meticulous code organization, enhanced maintainability, and scalable software architectures. These design patterns emerged as indispensable assets in the developer's arsenal, providing concrete solutions to recurring design complexities and promoting the adoption of best practices in software engineering. They not only simplify the integration of disparate components but also enable the seamless augmentation of functionalities, the dynamic structuring of hierarchical relationships, and the seamless adaptation of incompatible interfaces.
