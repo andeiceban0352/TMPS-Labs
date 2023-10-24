@@ -7,10 +7,14 @@
 #include "./bank/domain/models/accout.h"
 #include "./bank/domain/models/customer.h"
 #include "./bank/domain/models/bankAccount.h"
-#include "./bank/domain/models/bank.h"
 #include "./bank/domain/builder/customerBuilder.h"
+#include "./bank/domain/models/bank.h"
+#include "./bank/domain/composite/components.h"
 #include "./bank/domain/factory/accountFactory.h"
+#include "./bank/domain/adapter/bankAdapter.h"
+#include "./bank/domain/decorator/menuDecorator.h"
 #include "./bank/client/bankApplicationMenu.h"
+#include "./bank/domain/facade/bankFacade.h"
 
 using namespace std;
 
@@ -19,9 +23,17 @@ using namespace std;
 
 
 int main() {
+    // facade method 
+    BankFacade bankFacade;
+
     BankApplicationMenu bankApp;
     Bank& bank = Bank::getInstance();
+    BankInterface* bankAdapter = new BankAdapter(bank); // Create an instance of the BankAdapter
+
     AccountFactory* factory = new BankAccountFactory(); // Create an instance of the BankAccountFactory
+
+    BankApplicationMenuDecorator bankAppDecorator(bankAdapter); // Create an instance of the BankApplicationMenuDecorator
+    BankComposite bankComposite; // Composite instance to hold multiple accounts
 
     int choice;
     string accountNumber;
@@ -45,6 +57,7 @@ int main() {
         Customer customer = customerBuilder.setName("").setAge(0).setAddress("").setIsVIP("").build();           
         BankAccount* account = bankApp.acquireBankAccount(1000); // Assuming initial balance is 1000
         BankAccount* newAccount;
+
         switch (choice) {
             case 1:
                 cout << "Enter the account number: ";
@@ -54,17 +67,13 @@ int main() {
                 // Use the factory to create an account
                 newAccount = factory->createAccount(initialBalance);
                 // Add the new account to the bank's accounts
-                bank.createAccount(accountNumber, newAccount);
-                break;
-                // cout << "Enter the account number: ";
-                // cin >> accountNumber;
-                // cout << "Enter the initial balance: ";
-                // cin >> initialBalance;
-                // bank.createAccount(accountNumber, initialBalance);
-                // bankApp.createAccount();
+                bankAdapter->createAccount(accountNumber, newAccount);
+                bankComposite.add(new BankLeaf(newAccount));
+
+                // bank.createAccount(accountNumber, newAccount);
                 break;
             case 2:
-                bankApp.makeTransaction();
+                bankFacade.makeTransaction();
                 break;
             case 3:
                 cout << "Enter account number: ";
@@ -85,15 +94,13 @@ int main() {
                 cin >> accountNumber;
                 cout << "Enter amount to deposit: ";
                 cin >> amount;
-                bank.depositMoney(accountNumber, amount);
+                bankAdapter->depositMoney(accountNumber, amount);
+
+                // bank.depositMoney(accountNumber, amount);
                 break;
             case 5:
-                cout << "Enter account number: ";
-                cin >> accountNumber;
-                balance = bank.checkAccountBalance(accountNumber);
-                if (balance != 0) {
-                    cout << "Current account balance: " << balance << endl;
-                }
+                // Use the decorated method to check account balance
+                bankAppDecorator.checkAccountBalance();
                 break;
             case 6:
                 // bankApp.createVIPCustomer();
@@ -104,7 +111,9 @@ int main() {
                 break;
                 
             case 7:
-                bankApp.createRegularCustomer();
+                // Composite pattern
+               cout << "Checking all account balances:" << endl;
+                bankComposite.displayAccountDetails();
                 break;
             case 8:
                 cout << "Exiting..." << endl;
