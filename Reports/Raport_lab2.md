@@ -86,9 +86,10 @@ The Builder design pattern is used to construct a complex object step by step. T
 
 ### Factory Design Pattern
 
-Prototype design pattern is used when the Object creation is a costly affair and requires a lot of time and resources and you have a similar object already existing
+It is used when we have a superclass with multiple sub-classes and based on input, we need to return one of the sub-class.
 
-The Prototype design pattern allows you to create new objects by copying an existing object, known as a prototype. In the code, the AccountFactory class, which is the factory interface, defining the method createAccount for creating BankAccount objects. The BankAccountFactory is a concrete factory class that inherits from the AccountFactory and provides an implementation for the createAccount method, creating instances of the BankAccount class.
+ In the code, the AccountFactory class, which is the factory interface, defining the method createAccount for creating BankAccount objects. The BankAccountFactory is a concrete factory class that inherits from the AccountFactory and provides an implementation for the createAccount method, creating instances of the BankAccount class.
+ The client code interacts with the abstract factory, providing flexibility to create different types of objects without exposing their specific implementations
 
 ```c++
     // Abstract factory for creating accounts
